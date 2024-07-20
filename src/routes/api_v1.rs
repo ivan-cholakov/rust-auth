@@ -6,6 +6,7 @@ use std::sync::Arc;
 
 use crate::handlers::{self, auth};
 use crate::services::{AuthService, OAuthService, SiweService, UserService};
+use tower_http::services::ServeDir;
 
 #[derive(Clone)]
 pub struct AppState {
@@ -29,12 +30,14 @@ pub fn create_router(
     };
 
     Router::new()
+        .route("/", get(handlers::user::get_users))
         .route("/users", get(handlers::user::get_users))
-        .route("/register", post(auth::register))
-        .route("/login", post(auth::login))
+        .route("/register", get(auth::show_register).post(auth::register))
+        .route("/login", get(auth::show_login).post(auth::login))
         .route("/logout", post(auth::logout))
         .route("/oauth/login", get(auth::oauth_login))
         .route("/oauth/callback", get(auth::oauth_callback))
         .route("/siwe/login", post(auth::siwe_login))
+        .nest_service("/static", ServeDir::new("static"))
         .with_state(state)
 }

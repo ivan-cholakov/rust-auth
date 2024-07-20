@@ -1,33 +1,42 @@
 use crate::error::AppError;
 use crate::models::auth::{AuthResponse, LoginRequest, RegisterRequest};
-use crate::routes::AppState;
+use crate::routes::api_v1::AppState;
 use crate::services::{AuthService, OAuthService, SiweService};
-use axum::{
-    extract::{Query, State},
-    Json,
-};
+use crate::templates::{LoginTemplate, RegisterTemplate};
+use askama_axum::IntoResponse;
+use askama_axum::Template;
+use axum::{extract::Query, Json};
+use axum::{extract::State, response::Html, Form};
 use serde::Deserialize;
 use std::sync::Arc;
 
+pub async fn show_register() -> impl IntoResponse {
+    let template = RegisterTemplate {};
+    Html(template.render().unwrap())
+}
+
+pub async fn show_login() -> impl IntoResponse {
+    let template = LoginTemplate {};
+    Html(template.render().unwrap())
+}
+
 pub async fn register(
     State(state): State<AppState>,
-    Json(req): Json<RegisterRequest>,
-) -> Result<Json<AuthResponse>, AppError> {
+    Form(req): Form<RegisterRequest>,
+) -> Result<impl IntoResponse, AppError> {
     let res = state.auth_service.register(req).await?;
-    Ok(Json(res))
+    Ok(format!("Registered successfully! Token: {}", res.token))
 }
 
 pub async fn login(
     State(state): State<AppState>,
-    Json(req): Json<LoginRequest>,
-) -> Result<Json<AuthResponse>, AppError> {
+    Form(req): Form<LoginRequest>,
+) -> Result<impl IntoResponse, AppError> {
     let res = state.auth_service.login(req).await?;
-    Ok(Json(res))
+    Ok(format!("Logged in successfully! Token: {}", res.token))
 }
 
-pub async fn logout() -> &'static str {
-    // In a stateless JWT-based auth system, logout is typically handled client-side
-    // by removing the token. Here we just return a success message.
+pub async fn logout() -> impl IntoResponse {
     "Logged out successfully"
 }
 

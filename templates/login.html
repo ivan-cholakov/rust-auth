@@ -1,0 +1,88 @@
+{% extends "base.html" %} {% block title %}Login{% endblock %} {% block content
+%}
+<div class="card bg-base-100 shadow-xl max-w-md mx-auto">
+    <div class="card-body">
+        <h2 class="card-title">Login</h2>
+        <form hx-post="/login" hx-swap="outerHTML">
+            <div class="form-control">
+                <label class="label" for="username">
+                    <span class="label-text">Username</span>
+                </label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Username"
+                    class="input input-bordered"
+                    required
+                />
+            </div>
+            <div class="form-control">
+                <label class="label" for="password">
+                    <span class="label-text">Password</span>
+                </label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Password"
+                    class="input input-bordered"
+                    required
+                />
+            </div>
+            <div class="form-control mt-6">
+                <button class="btn btn-primary">Login</button>
+            </div>
+        </form>
+        <div class="divider">OR</div>
+        <button
+            class="btn btn-secondary"
+            hx-get="/oauth/login"
+            hx-swap="outerHTML"
+        >
+            Login with OAuth
+        </button>
+        <button id="siweButton" class="btn btn-accent mt-2">
+            Sign-In with Ethereum
+        </button>
+    </div>
+</div>
+
+<script src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
+<script>
+    document
+        .getElementById("siweButton")
+        .addEventListener("click", async () => {
+            if (typeof window.ethereum !== "undefined") {
+                const provider = new ethers.providers.Web3Provider(
+                    window.ethereum
+                );
+                await provider.send("eth_requestAccounts", []);
+                const signer = provider.getSigner();
+                const address = await signer.getAddress();
+                const message = `Sign in with Ethereum to the app\n\nURI: https://your-app-domain.com\nVersion: 1\nChain ID: 1\nNonce: ${Math.floor(
+                    Math.random() * 1000000
+                )}\nIssued At: ${new Date().toISOString()}`;
+                const signature = await signer.signMessage(message);
+
+                const response = await fetch("/siwe/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ message, signature }),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    localStorage.setItem("authToken", result.token);
+                    window.location.href = "/";
+                } else {
+                    alert("SIWE login failed");
+                }
+            } else {
+                alert("Please install MetaMask!");
+            }
+        });
+</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{
+    "name": "rs-doom",
+    "version": "1.0.0",
+    "main": "index.js",
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "build:css": "tailwindcss -i ./static/main.css -o ./static/styles.css --minify"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "devDependencies": {
+        "autoprefixer": "^10.4.19",
+        "daisyui": "^4.12.10",
+        "postcss": "^8.4.39",
+        "tailwindcss": "^3.4.6"
+    }
+}

@@ -10,6 +10,7 @@ mod models;
 mod repositories;
 mod routes;
 mod services;
+mod templates;
 
 use crate::config::AppConfig;
 use crate::db::create_pool;

@@ -7,7 +7,7 @@ edition = "2021"
 axum = "0.7.5"
 tokio = { version = "1.38.1", features = ["full"] }
 tower = "0.4.13"
-tower-http = { version = "0.5.2", features = ["trace"] }
+tower-http = { version = "0.5.2", features = ["trace","fs"] }
 serde = { version = "1.0.204", features = ["derive"] }
 serde_json = "1.0"
 sqlx = { version = "0.7", features = ["runtime-tokio", "tls-rustls", "postgres", "migrate", "time"] }
@@ -23,6 +23,8 @@ siwe = "0.6.1"
 ethers = "2.0.14"
 reqwest = { version = "0.12.5", features = ["json"] }
 time = "0.3.36"
+askama = "0.12.1"
+askama_axum = "0.4.0"
 
 [dev-dependencies]
 axum-test-helper = "0.3"
