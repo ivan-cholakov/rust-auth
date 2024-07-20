@@ -1,32 +1,17 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{% block title %}My App{% endblock %}</title>
-        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-        <link href="/static/styles.css" rel="stylesheet" />
-    </head>
-    <body class="min-h-screen bg-base-200">
-        <div class="navbar bg-base-100">
-            <div class="flex-1">
-                <a href="/" class="btn btn-ghost normal-case text-xl">My App</a>
-            </div>
-            <div class="flex-none">
-                <ul class="menu menu-horizontal px-1">
-                    <li><a href="/users">Users</a></li>
-                    <li><a href="/register">Register</a></li>
-                    <li><a href="/login">Login</a></li>
-                    <li>
-                        <a href="#" hx-post="/logout" hx-swap="outerHTML"
-                            >Logout</a
-                        >
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <main class="container mx-auto p-4">
-            {% block content %}{% endblock %}
-        </main>
-    </body>
-</html>
+<div class="navbar bg-base-100">
+    <div class="flex-1">
+        <a href="/" class="btn btn-ghost normal-case text-xl">My App</a>
+    </div>
+    <div class="flex-none">
+        <ul class="menu menu-horizontal px-1">
+            <li><a href="/users">Users</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/bundles">Bundles</a></li>
+            <li><a href="/register">Register</a></li>
+            <li><a href="/login">Login</a></li>
+            <li>
+                <a href="#" hx-post="/logout" hx-swap="outerHTML">Logout</a>
+            </li>
+        </ul>
+    </div>
+</div>

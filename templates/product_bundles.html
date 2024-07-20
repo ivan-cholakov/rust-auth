@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block title %}Product Bundles{% endblock %} {%
+block content %}
+<div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+        <h2 class="card-title">Product Bundles</h2>
+        <div class="overflow-x-auto">
+            <table class="table w-full">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Discount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bundle in bundles %}
+                    <tr>
+                        <td>{{ bundle.id }}</td>
+                        <td>{{ bundle.name }}</td>
+                        <td>{{ bundle.description }}</td>
+                        <td>{{ bundle.discount_percentage }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

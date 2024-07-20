@@ -1,0 +1,68 @@
+{% extends "base.html" %} {% block title %} {% if product %}Edit Product{% else
+%}Create New Product{% endif %} {% endblock %} {% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">
+        {% if product %}Edit Product{% else %}Create New Product{% endif %}
+    </h1>
+
+    <form
+        hx-{%
+        if
+        product
+        %}put{%
+        else
+        %}post{%
+        endif
+        %}="/products{% if product %}/{{ product.id }}{% endif %}"
+        hx-target="body"
+        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+    >
+        <div class="mb-4">
+            <label
+                class="block text-gray-700 text-sm font-bold mb-2"
+                for="name"
+            >
+                Product Name
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3
+            text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="name" type="text" name="name" value="{{ product.name|default("",
+            true) }}" required>
+        </div>
+        <div class="mb-4">
+            <label
+                class="block text-gray-700 text-sm font-bold mb-2"
+                for="description"
+            >
+                Description
+            </label>
+            <textarea
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="description"
+                name="description"
+                rows="3"
+            >
+{{ product.description|default("", true) }}</textarea
+            >
+        </div>
+        <div class="mb-6">
+            <label
+                class="block text-gray-700 text-sm font-bold mb-2"
+                for="price"
+            >
+                Price
+            </label>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3
+            text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="price" type="number" name="price" step="0.01" value="{{
+            product.price|default("0.00", true) }}" required>
+        </div>
+        <div class="flex items-center justify-between">
+            <button class="btn btn-primary" type="submit">
+                {% if product %}Update{% else %}Create{% endif %} Product
+            </button>
+            <a href="/products" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

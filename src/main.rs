@@ -1,5 +1,7 @@
 use std::sync::Arc;
 
+use repositories::ProductRepositoryImpl;
+use services::ProductServiceImpl;
 use sqlx::PgPool;
 
 mod config;
@@ -25,6 +27,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let pool_arc = Arc::new(pool);
 
     let user_repository = Arc::new(UserRepositoryImpl::new(pool_arc.clone()));
+    let product_repository = Arc::new(ProductRepositoryImpl::new(pool_arc.clone()));
+
     let user_service = Arc::new(UserServiceImpl::new(user_repository.clone()));
     let auth_service = Arc::new(AuthServiceImpl::new(
         user_repository.clone(),
@@ -38,8 +42,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         config.oauth_redirect_url,
     ));
     let siwe_service = Arc::new(SiweServiceImpl::new());
+    let product_service = Arc::new(ProductServiceImpl::new(product_repository));
 
-    let app = create_router(user_service, auth_service, oauth_service, siwe_service);
+    let app = create_router(
+        user_service,
+        auth_service,
+        oauth_service,
+        siwe_service,
+        product_service,
+    );
 
     let listener = tokio::net::TcpListener::bind(&config.server_addr).await?;
     println!("Listening on {}", config.server_addr);
