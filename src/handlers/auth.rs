@@ -18,10 +18,10 @@ pub async fn register(
 }
 
 pub async fn login(
-    State(auth_service): State<Arc<dyn AuthService>>,
+    State(state): State<AppState>,
     Json(req): Json<LoginRequest>,
 ) -> Result<Json<AuthResponse>, AppError> {
-    let res = auth_service.login(req).await?;
+    let res = state.auth_service.login(req).await?;
     Ok(Json(res))
 }
 
@@ -37,18 +37,16 @@ pub struct OAuthCallback {
     state: String,
 }
 
-pub async fn oauth_login(
-    State(oauth_service): State<Arc<dyn OAuthService>>,
-) -> Result<String, AppError> {
-    let (auth_url, _csrf_token) = oauth_service.get_authorize_url();
+pub async fn oauth_login(State(state): State<AppState>) -> Result<String, AppError> {
+    let (auth_url, _csrf_token) = state.oauth_service.get_authorize_url();
     Ok(auth_url)
 }
 
 pub async fn oauth_callback(
-    State(oauth_service): State<Arc<dyn OAuthService>>,
+    State(state): State<AppState>,
     Query(params): Query<OAuthCallback>,
 ) -> Result<Json<AuthResponse>, AppError> {
-    let token = oauth_service.exchange_code(params.code).await?;
+    let token = state.oauth_service.exchange_code(params.code).await?;
     Ok(Json(AuthResponse { token }))
 }
 
@@ -59,10 +57,11 @@ pub struct SiweRequest {
 }
 
 pub async fn siwe_login(
-    State(siwe_service): State<Arc<dyn SiweService>>,
+    State(state): State<AppState>,
     Json(req): Json<SiweRequest>,
 ) -> Result<Json<AuthResponse>, AppError> {
-    let address = siwe_service
+    let address = state
+        .siwe_service
         .verify_signature(req.message, req.signature)
         .await?;
     // Here you would typically create or fetch a user based on the Ethereum address
