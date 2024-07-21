@@ -14,17 +14,10 @@ pub trait ProductService: Send + Sync {
 
     async fn get_all_bundles(&self) -> Result<Vec<ProductBundle>, AppError>;
     async fn get_bundle(&self, id: i32) -> Result<ProductBundle, AppError>;
-    async fn create_bundle(
-        &self,
-        bundle: ProductBundle,
-        products: Vec<BundleProduct>,
-    ) -> Result<ProductBundle, AppError>;
-    async fn update_bundle(
-        &self,
-        bundle: ProductBundle,
-        products: Vec<BundleProduct>,
-    ) -> Result<ProductBundle, AppError>;
+    async fn create_bundle(&self, bundle: ProductBundle, products: Vec<BundleProduct>) -> Result<ProductBundle, AppError>;
+    async fn update_bundle(&self, id: i32, bundle: ProductBundle, products: Vec<BundleProduct>) -> Result<ProductBundle, AppError>;
     async fn delete_bundle(&self, id: i32) -> Result<(), AppError>;
+    async fn get_bundle_products(&self, bundle_id: i32) -> Result<Vec<(Product, i32)>, AppError>;
 }
 
 pub struct ProductServiceImpl {
@@ -77,17 +70,16 @@ impl ProductService for ProductServiceImpl {
             .await
     }
 
-    async fn update_bundle(
-        &self,
-        bundle: ProductBundle,
-        products: Vec<BundleProduct>,
-    ) -> Result<ProductBundle, AppError> {
-        self.product_repository
-            .update_bundle(bundle, products)
-            .await
+    async fn update_bundle(&self, id: i32, mut bundle: ProductBundle, products: Vec<BundleProduct>) -> Result<ProductBundle, AppError> {
+        bundle.id = id; // Ensure the bundle has the correct ID
+        self.product_repository.update_bundle(bundle, products).await
     }
 
     async fn delete_bundle(&self, id: i32) -> Result<(), AppError> {
         self.product_repository.delete_bundle(id).await
+    }
+
+    async fn get_bundle_products(&self, bundle_id: i32) -> Result<Vec<(Product, i32)>, AppError> {
+        self.product_repository.get_bundle_products(bundle_id).await
     }
 }

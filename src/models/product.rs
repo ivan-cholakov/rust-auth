@@ -1,20 +1,21 @@
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
+use sqlx::types::BigDecimal;
 
-#[derive(Clone, Debug, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Clone, Debug, FromRow)]
 pub struct Product {
     pub id: i32,
     pub name: String,
     pub description: Option<String>,
-    pub price: f64,
+    pub price: BigDecimal,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Clone, Debug, FromRow)]
 pub struct ProductBundle {
     pub id: i32,
     pub name: String,
     pub description: Option<String>,
-    pub discount_percentage: f64,
+    pub discount_percentage: BigDecimal,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, FromRow)]

@@ -1,85 +1,47 @@
-{% extends "base.html" %} {% block title %} {% if bundle %}Edit Bundle{% else
-%}Create New Bundle{% endif %} {% endblock %} {% block content %}
+{% extends "base.html" %}
+
+{% block title %}
+    {% if bundle %}Edit Bundle{% else %}Create New Bundle{% endif %}
+{% endblock %}
+
+{% block content %}
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-6">
         {% if bundle %}Edit Bundle{% else %}Create New Bundle{% endif %}
     </h1>
 
-    <form
-        hx-{%
-        if
-        bundle
-        %}put{%
-        else
-        %}post{%
-        endif
-        %}="/bundles{% if bundle %}/{{ bundle.id }}{% endif %}"
-        hx-target="body"
-        class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-    >
+    <form hx-{% if bundle %}put{% else %}post{% endif %}="/bundles{% if bundle %}/{{ bundle.id }}{% endif %}"
+          hx-target="body"
+          class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div class="mb-4">
-            <label
-                class="block text-gray-700 text-sm font-bold mb-2"
-                for="name"
-            >
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
                 Bundle Name
             </label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3
-            text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="name" type="text" name="name" value="{{ bundle.name|default("",
-            true) }}" required>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                   id="name" type="text" name="name" value="{{ bundle.name|default("", true) }}" required>
         </div>
         <div class="mb-4">
-            <label
-                class="block text-gray-700 text-sm font-bold mb-2"
-                for="description"
-            >
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
                 Description
             </label>
-            <textarea
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="description"
-                name="description"
-                rows="3"
-            >
-{{ bundle.description|default("", true) }}</textarea
-            >
+            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      id="description" name="description" rows="3">{{ bundle.description|default("", true) }}</textarea>
         </div>
         <div class="mb-6">
-            <label
-                class="block text-gray-700 text-sm font-bold mb-2"
-                for="discount_percentage"
-            >
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="discount_percentage">
                 Discount Percentage
             </label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3
-            text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="discount_percentage" type="number" name="discount_percentage"
-            step="0.01" min="0" max="100" value="{{
-            bundle.discount_percentage|default("0.00", true) }}" required>
+            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                   id="discount_percentage" type="number" name="discount_percentage" step="0.01" min="0" max="100"
+                   value="{{ bundle.discount_percentage|default("0.00", true) }}" required>
         </div>
         <div class="mb-6">
             <h2 class="text-xl font-bold mb-2">Select Products for Bundle</h2>
             {% for product in all_products %}
             <div class="flex items-center mb-2">
-                <input
-                    type="checkbox"
-                    id="product_{{ product.id }}"
-                    name="product_ids[]"
-                    value="{{ product.id }}"
-                    class="mr-2"
-                    {% if product in selected_products %}checked{% endif %}
-                />
-                <label for="product_{{ product.id }}">{{ product.name }} - ${{ product.price }}</label
-                >
-                <input
-                    type="number"
-                    name="quantities[]"
-                    value="{{ selected_products[product.id]|default(1, true) }}"
-                    min="1"
-                    class="ml-2 w-16 border rounded"
-                    {% if product in selected_products %}disabled{% endif %}
-                />
+                
+                <label for="product_{{ product.id }}">{{ product.name }} - ${{ product.price }}</label>
+                
             </div>
             {% endfor %}
         </div>
@@ -93,11 +55,9 @@
 </div>
 
 <script>
-    document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
-        checkbox.addEventListener("change", function () {
-            const quantityInput = this.parentNode.querySelector(
-                'input[type="number"]'
-            );
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const quantityInput = this.parentNode.querySelector('input[type="number"]');
             quantityInput.disabled = !this.checked;
         });
     });

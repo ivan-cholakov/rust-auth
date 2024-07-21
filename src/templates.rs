@@ -1,6 +1,6 @@
-use crate::models::{Product, ProductBundle, User};
 use askama::Template;
-
+use crate::models::{Product, ProductBundle, User};
+use std::collections::HashMap;
 #[derive(Template)]
 #[template(path = "users.html")]
 pub struct UsersTemplate {
@@ -33,7 +33,6 @@ pub struct ProductFormTemplate {
     pub product: Option<Product>,
     pub action: String,
 }
-
 #[derive(Template)]
 #[template(path = "bundles/list.html")]
 pub struct BundleListTemplate {
@@ -44,7 +43,7 @@ pub struct BundleListTemplate {
 #[template(path = "bundles/detail.html")]
 pub struct BundleDetailTemplate {
     pub bundle: ProductBundle,
-    pub products: Vec<(Product, i32)>, // (Product, quantity)
+    pub products: Vec<(Product, i32)>,
 }
 
 #[derive(Template)]
@@ -52,6 +51,6 @@ pub struct BundleDetailTemplate {
 pub struct BundleFormTemplate {
     pub bundle: Option<ProductBundle>,
     pub all_products: Vec<Product>,
-    pub selected_products: Vec<(Product, i32)>, // (Product, quantity)
+    pub selected_products: HashMap<i32, i32>,
     pub action: String,
 }

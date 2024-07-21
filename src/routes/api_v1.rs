@@ -47,26 +47,14 @@ pub fn create_router(
         .route("/oauth/login", get(auth::oauth_login))
         .route("/oauth/callback", get(auth::oauth_callback))
         .route("/siwe/login", post(auth::siwe_login))
-        .route(
-            "/products",
-            get(product::get_products).post(product::create_product),
-        )
-        .route(
-            "/products/:id",
-            get(product::get_product)
-                .put(product::update_product)
-                .delete(product::delete_product),
-        )
-        .route(
-            "/bundles",
-            get(product::get_bundles).post(product::create_bundle),
-        )
-        .route(
-            "/bundles/:id",
-            get(product::get_bundle)
-                .put(product::update_bundle)
-                .delete(product::delete_bundle),
-        )
+        .route("/products", get(product::get_products).post(product::create_product))
+        .route("/products/new", get(product::new_product))
+        .route("/products/:id", get(product::get_product).put(product::update_product).delete(product::delete_product))
+        .route("/products/:id/edit", get(product::edit_product))
+        .route("/bundles", get(product::get_bundles).post(product::create_bundle))
+        .route("/bundles/new", get(product::new_bundle))
+        .route("/bundles/:id", get(product::get_bundle).put(product::update_bundle).delete(product::delete_bundle))
+        .route("/bundles/:id/edit", get(product::edit_bundle))
         .nest_service("/static", ServeDir::new("static"))
         .with_state(state)
 }
